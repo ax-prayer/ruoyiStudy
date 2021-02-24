@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysSalaryMapper">
+        <resultMap type="SysSalary" id="SysSalaryResult">
+            <id column="salary_id" property="salaryId" />
+            <result column="salary_number" property="salaryNumber" />
+            <result column="salary_name" property="salaryName" />
+            <result column="salary_sex" property="salarySex" />
+            <result column="salary_age" property="salaryAge" />
+            <result column="salary_pay" property="salaryPay" />
+            <result column="salary_address" property="salaryAddress"/>
+            <result column="salary_status" property="salaryStatus"/>
+            <result column="remark" property="remark"/>
+            <result column="create_by" property="createBy"/>
+            <result column="create_time" property="createTime"/>
+            <result column="update_by" property="updateBy"/>
+            <result column="update_time" property="updateTime"/>
+        </resultMap>
+
+    <insert id="insertSalary" parameterType="SysSalary"  >
+        INSERT INTO sys_salary(salary_number,salary_name,salary_sex,salary_age,salary_pay,salary_address,salary_status,remark,create_by,create_time,update_by,update_time)
+        VALUES(#{salaryNumber}, #{salaryName},#{salarySex},#{salaryAge},#{salaryPay},#{salaryAddress},#{salaryStatus},#{remark},#{createBy},#{createTime},#{updateBy},#{updateTime});
+    </insert>
+
+
+    <delete id="deleteSalaryByIds" parameterType="long">
+        DELETE FROM sys_salary
+        WHERE salary_id in
+        <foreach item="salaryId" collection="array" open="(" separator="," close=")">
+            #{salaryId}
+        </foreach>
+    </delete>
+
+    <update id="updateSalary" parameterType="SysSalary">
+        UPDATE sys_salary
+        <set>
+            <if test="salaryNumber != null">
+                salary_number= #{salaryNumber},
+            </if>
+            <if test="salaryName != null">
+                salary_name= #{salaryName},
+            </if>
+            <if test="salarySex != null">
+                salary_sex= #{salarySex},
+            </if>
+            <if test="salaryAge != null">
+                salary_age= #{salaryAge},
+            </if>
+            <if test="salaryPay != null">
+                salary_pay= #{salaryPay},
+            </if>
+            <if test="salaryAddress != null">
+                salary_address= #{salaryAddress},
+            </if>
+            <if test="salaryStatus != null">
+                salary_status= #{salaryStatus},
+            </if>
+            <if test="remark != null">
+                remark= #{remark},
+            </if>
+            <if test="createBy != null">
+                create_by= #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time= #{createTime},
+            </if>
+            <if test="updateBy != null">
+                update_by= #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time= #{updateTime},
+            </if>
+        </set>
+        WHERE salary_id = #{salaryId};
+    </update>
+
+    <sql id="salaryFieldSQLId">
+        salary_id,salary_number,salary_name,salary_sex,salary_age,salary_pay,salary_address,salary_status,remark,create_By,create_Time,update_By,update_Time
+    </sql>
+
+    <select id="selectSalaryById"
+            parameterType="long"
+            resultMap="SysSalaryResult">
+        SELECT <include refid="salaryFieldSQLId"/>
+        FROM sys_salary
+        WHERE salary_id = #{salaryId}
+    </select>
+
+    <select id="selectAllSalary"
+            resultMap="SysSalaryResult">
+        SELECT <include refid="salaryFieldSQLId"/>
+        FROM sys_salary
+    </select>
+
+    <select id="selectAllSalaryByCondition"
+            parameterType="SysSalary"
+            resultMap="SysSalaryResult">
+        SELECT
+        <include refid="salaryFieldSQLId"/>
+        FROM sys_salary
+        <where>
+            <if test="salaryNumber != null and '' != salaryNumber">
+                AND salary_number = #{salaryNumber}
+            </if>
+            <if test="salaryName != null and '' != salaryName">
+                AND salary_name like concat('%',#{salaryName},'%')
+            </if>
+            <if test="salarySex !=null and '' != salarySex">
+                AND salary_sex = #{salarySex}
+            </if>
+        </where>
+        ORDER BY update_time DESC,salary_id DESC
+    </select>
+
+</mapper>
